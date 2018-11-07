@@ -20,6 +20,9 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.videosaver.khomenko.videosaver.adapters.RadioDownload;
+import android.videosaver.khomenko.videosaver.youtubeExtractor.VideoMeta;
+import android.videosaver.khomenko.videosaver.youtubeExtractor.YouTubeExtractor;
+import android.videosaver.khomenko.videosaver.youtubeExtractor.YtFile;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,9 +35,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import at.huber.youtubeExtractor.VideoMeta;
-import at.huber.youtubeExtractor.YouTubeExtractor;
-import at.huber.youtubeExtractor.YtFile;
+import com.aditya.filebrowser.Constants;
+import com.aditya.filebrowser.FileBrowser;
+
+import java.io.File;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -47,6 +51,7 @@ public class StartActivity extends AppCompatActivity {
     private EditText inputURL;
     private Button button_detect;
     private TextView file_name;
+    private RadioDownload rd;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -59,7 +64,10 @@ public class StartActivity extends AppCompatActivity {
                     // mTextMessage.setText(R.string.title_home);
                     return true;
                 case R.id.navigation_dashboard:
-                    // mTextMessage.setText(R.string.title_dashboard);
+
+                    Intent i = new Intent(StartActivity.this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
+                    i.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Downloads").getAbsolutePath());
+                    startActivity(i);
                     return true;
                 case R.id.navigation_notifications:
                     // mTextMessage.setText(R.string.title_notifications);
@@ -125,9 +133,7 @@ public class StartActivity extends AppCompatActivity {
         mainLayout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                RadioDownload rb = findViewById(checkedId);
-                downloadFromUrl(rb.getYtfile().getUrl(), rb.getTitle(), rb.getFileName());
+                rd = findViewById(checkedId);
 
             }
         });
@@ -155,7 +161,13 @@ public class StartActivity extends AppCompatActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (rd != null) {
+                    downloadFromUrl(rd.getYtfile().getUrl(), rd.getTitle(), rd.getFileName());
+                    download.setEnabled(false);
+                    mainProgressBar.setVisibility(View.GONE);
+                    mainLayout.removeAllViews();
+                    rd = null;
+                }
             }
         });
 
@@ -260,6 +272,7 @@ public class StartActivity extends AppCompatActivity {
         btn.setYtfile(ytfile);
 
         String filenameButon;
+
         if (videoTitle.length() > 55) {
             filenameButon = videoTitle.substring(0, 55) + "." + ytfile.getFormat().getExt();
         } else {
