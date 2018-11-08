@@ -61,7 +61,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:text="Paste"
-                    app:srcCompat="@drawable/ic_content_paste_black_24dp" />
+                    app:srcCompat="@drawable/ic_content_paste_blac_24dp" />
 
             </LinearLayout>
 
@@ -79,6 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
+                android:textColor="@color/colorPrimary"
                 android:gravity="center_horizontal"
                 android:textSize="14sp" />
 

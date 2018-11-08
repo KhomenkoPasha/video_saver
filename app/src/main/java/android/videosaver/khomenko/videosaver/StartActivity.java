@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -66,7 +67,7 @@ public class StartActivity extends AppCompatActivity {
                 case R.id.navigation_dashboard:
 
                     Intent i = new Intent(StartActivity.this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
-                    i.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Downloads").getAbsolutePath());
+                    i.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Downloads").getAbsolutePath());
                     startActivity(i);
                     return true;
                 case R.id.navigation_notifications:
@@ -76,6 +77,20 @@ public class StartActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // this.onCreate(null);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        android.os.Process.killProcess(android.os.Process.myPid());
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +143,7 @@ public class StartActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        inputURL.setText("https://youtu.be/koYzo2QCQL0");
+        //  inputURL.setText("https://youtu.be/koYzo2QCQL0");
 
         mainLayout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -152,6 +167,7 @@ public class StartActivity extends AppCompatActivity {
                     // We have a valid link
                     getYoutubeDownloadUrl(youtubeLink);
                 } else {
+                    file_name.setText("");
                     mainProgressBar.setVisibility(View.GONE);
                     Toast.makeText(StartActivity.this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
                 }
@@ -171,28 +187,23 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-        // Check how it was started and if we can get the youtube link
-
-        if (savedInstanceState == null && Intent.ACTION_SEND.equals(getIntent().getAction())
-                && getIntent().getType() != null && "text/plain".equals(getIntent().getType())) {
-
-            String ytLink = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-
-            if (ytLink != null
-                    && (ytLink.contains("://youtu.be/") || ytLink.contains("youtube.com/watch?v="))) {
-                youtubeLink = ytLink;
-                // We have a valid link
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().getString("yURL") != null) {
+                String ytLink = getIntent().getExtras().getString("yURL");
+                if (ytLink != null
+                        && (ytLink.contains("://youtu.be/") || ytLink.contains("youtube.com/watch?v="))) {
+                    youtubeLink = ytLink;
+                    // We have a valid link
+                    getYoutubeDownloadUrl(youtubeLink);
+                    inputURL.setText(youtubeLink);
+                } else {
+                    Toast.makeText(this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
+                }
+            } else if (savedInstanceState != null && youtubeLink != null) {
                 getYoutubeDownloadUrl(youtubeLink);
-            } else {
-                Toast.makeText(this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
-            }
-        } else if (savedInstanceState != null && youtubeLink != null) {
-
-            getYoutubeDownloadUrl(youtubeLink);
+            } else mainProgressBar.setVisibility(View.GONE);
 
         } else mainProgressBar.setVisibility(View.GONE);
-
-
     }
 
     @Override
@@ -217,6 +228,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -237,6 +249,7 @@ public class StartActivity extends AppCompatActivity {
                     if (ytFiles == null) {
                         // Something went wrong we got no urls. Always check this.
                         Toast.makeText(StartActivity.this, getString(R.string.no_content), Toast.LENGTH_LONG).show();
+                        file_name.setText("");
                         return;
                     }
                     // Iterate over itags
@@ -249,8 +262,9 @@ public class StartActivity extends AppCompatActivity {
                         if (ytFile.getFormat().getHeight() == -1 || ytFile.getFormat().getHeight() >= 360) {
                             addButtonToMainLayout(vMeta.getTitle(), ytFile);
                         }
-                    }
 
+                    }
+                    file_name.setText(vMeta.getTitle());
                     download.setEnabled(true);
 
                 } catch (Exception ex) {
@@ -259,6 +273,31 @@ public class StartActivity extends AppCompatActivity {
             }
         }.extract(youtubeLink, true, false);
     }
+
+    /*
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Store our shared preference
+        SharedPreferences sp = getSharedPreferences("RUNING", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("active", true);
+        ed.apply();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Store our shared preference
+        SharedPreferences sp = getSharedPreferences("RUNING", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("active", false);
+        ed.apply();
+
+    }
+*/
 
     private void addButtonToMainLayout(final String videoTitle, final YtFile ytfile) {
         // Display some buttons and let the user choose the format
