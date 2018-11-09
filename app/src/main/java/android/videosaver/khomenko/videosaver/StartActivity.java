@@ -6,7 +6,6 @@ import android.app.ActionBar;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -38,6 +37,7 @@ import android.widget.Toast;
 
 import com.aditya.filebrowser.Constants;
 import com.aditya.filebrowser.FileBrowser;
+import com.aditya.filebrowser.FileBrowserWithCustomHandler;
 
 import java.io.File;
 
@@ -50,7 +50,6 @@ public class StartActivity extends AppCompatActivity {
     private ProgressBar mainProgressBar;
     private Button download;
     private EditText inputURL;
-    private Button button_detect;
     private TextView file_name;
     private RadioDownload rd;
 
@@ -65,10 +64,15 @@ public class StartActivity extends AppCompatActivity {
                     // mTextMessage.setText(R.string.title_home);
                     return true;
                 case R.id.navigation_dashboard:
-
-                    Intent i = new Intent(StartActivity.this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
-                    i.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Downloads").getAbsolutePath());
+                    Intent i = new Intent(StartActivity.this, FileBrowserWithCustomHandler.class);
+                    Bundle ib = new Bundle();
+//add extras
+                    i.putExtras(ib);
                     startActivity(i);
+
+                    //  Intent i = new Intent(StartActivity.this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
+                    //  i.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Downloads").getAbsolutePath());
+                    //  startActivity(i);
                     return true;
                 case R.id.navigation_notifications:
                     // mTextMessage.setText(R.string.title_notifications);
@@ -85,8 +89,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         android.os.Process.killProcess(android.os.Process.myPid());
 
@@ -136,7 +139,7 @@ public class StartActivity extends AppCompatActivity {
         mainProgressBar = findViewById(R.id.prgrBar);
         download = findViewById(R.id.button_download);
         inputURL = findViewById(R.id.inputURL);
-        button_detect = findViewById(R.id.button_detect);
+        Button button_detect = findViewById(R.id.button_detect);
         file_name = findViewById(R.id.file_name);
 
         // mTextMessage = findViewById(R.id.message);
@@ -207,7 +210,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.v("PERM", "Permission: " + permissions[0] + "was " + grantResults[0]);
@@ -226,7 +229,6 @@ public class StartActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 
     @Override
@@ -306,10 +308,10 @@ public class StartActivity extends AppCompatActivity {
                 ytfile.getFormat().getHeight() + "p";
         btnText += (ytfile.getFormat().isDashContainer()) ? " MPEG-DASH" : "";
 
-        RadioDownload btn = (RadioDownload) getLayoutInflater().inflate(R.layout.radio_button, null, false);
+        @SuppressLint("InflateParams") RadioDownload btn =
+                (RadioDownload) getLayoutInflater().inflate(R.layout.radio_button, null, false);
 
         btn.setYtfile(ytfile);
-
         String filenameButon;
 
         if (videoTitle.length() > 55) {

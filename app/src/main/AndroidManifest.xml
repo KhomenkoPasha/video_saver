@@ -87,6 +87,14 @@
 
         </activity>
 
+        <receiver android:name=".FileSelectedBroadCastReceiver"
+            android:exported="false"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.adityak.filebrowser.FILE_SELECTED_BROADCAST" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
