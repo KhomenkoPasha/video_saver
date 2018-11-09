@@ -49,7 +49,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusableInTouchMode="true"
-                        android:hint="Видео ссылка"
+                        android:hint="@string/to_downad"
                         android:textSize="13sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="true"
-                android:text="Найти по ссылке" />
+                android:text="@string/to_downlod" />
 
 
             <TextView
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:gravity="center_horizontal"
-                android:text="Select TYPE and Quality:"
+                android:text="@string/to_dowd"
                 android:textSize="14sp" />
 
             <View
@@ -111,7 +111,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal|center"
                 android:orientation="vertical">
-
             </RadioGroup>
 
 

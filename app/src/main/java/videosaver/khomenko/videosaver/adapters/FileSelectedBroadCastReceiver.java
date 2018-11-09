@@ -1,4 +1,4 @@
-package android.videosaver.khomenko.videosaver;
+package videosaver.khomenko.videosaver.adapters;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +9,6 @@ public class FileSelectedBroadCastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Uri filePath = intent.getParcelableExtra(com.aditya.filebrowser.Constants.BROADCAST_SELECTED_FILE);
-        String d = "";
+        String string = "d";
     }
 }

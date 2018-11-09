@@ -1,4 +1,4 @@
-package android.videosaver.khomenko.videosaver;
+package videosaver.khomenko.videosaver;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -15,17 +15,16 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
-import android.videosaver.khomenko.videosaver.adapters.RadioDownload;
-import android.videosaver.khomenko.videosaver.youtubeExtractor.VideoMeta;
-import android.videosaver.khomenko.videosaver.youtubeExtractor.YouTubeExtractor;
-import android.videosaver.khomenko.videosaver.youtubeExtractor.YtFile;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -36,10 +35,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aditya.filebrowser.Constants;
-import com.aditya.filebrowser.FileBrowser;
-import com.aditya.filebrowser.FileBrowserWithCustomHandler;
+import com.aditya.filebrowser.FileChooser;
 
 import java.io.File;
+
+import videosaver.khomenko.videosaver.adapters.RadioDownload;
+import videosaver.khomenko.videosaver.youtubeExtractor.VideoMeta;
+import videosaver.khomenko.videosaver.youtubeExtractor.YouTubeExtractor;
+import videosaver.khomenko.videosaver.youtubeExtractor.YtFile;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -64,15 +67,12 @@ public class StartActivity extends AppCompatActivity {
                     // mTextMessage.setText(R.string.title_home);
                     return true;
                 case R.id.navigation_dashboard:
-                    Intent i = new Intent(StartActivity.this, FileBrowserWithCustomHandler.class);
-                    Bundle ib = new Bundle();
-//add extras
-                    i.putExtras(ib);
-                    startActivity(i);
 
-                    //  Intent i = new Intent(StartActivity.this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
-                    //  i.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Downloads").getAbsolutePath());
-                    //  startActivity(i);
+                    Intent i2 = new Intent(getApplicationContext(), FileChooser.class);
+                    i2.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal());
+                    i2.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.DIRECTORY_DOWNLOADS));
+                    startActivityForResult(i2, 12);
+
                     return true;
                 case R.id.navigation_notifications:
                     // mTextMessage.setText(R.string.title_notifications);
@@ -169,6 +169,8 @@ public class StartActivity extends AppCompatActivity {
                     youtubeLink = urlinp;
                     // We have a valid link
                     getYoutubeDownloadUrl(youtubeLink);
+
+
                 } else {
                     file_name.setText("");
                     mainProgressBar.setVisibility(View.GONE);
@@ -183,9 +185,15 @@ public class StartActivity extends AppCompatActivity {
                 if (rd != null) {
                     downloadFromUrl(rd.getYtfile().getUrl(), rd.getTitle(), rd.getFileName());
                     download.setEnabled(false);
+
                     mainProgressBar.setVisibility(View.GONE);
                     mainLayout.removeAllViews();
                     rd = null;
+                    Toast.makeText(StartActivity.this, file_name.getText().toString() + " - "
+                            + StartActivity.this.getResources().getString(R.string.to_download), Toast.LENGTH_LONG).show();
+                    file_name.setText("");
+                    inputURL.setText("");
+                    youtubeLink = "";
                 }
             }
         });
@@ -234,7 +242,7 @@ public class StartActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+       // getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -274,6 +282,46 @@ public class StartActivity extends AppCompatActivity {
                 }
             }
         }.extract(youtubeLink, true, false);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 12 && data != null) {
+            if (resultCode == RESULT_OK) {
+                Uri file = data.getData();
+                //  fileName = fileName.replace("/","");
+                try {
+                    String fileName = null;
+                    if (file != null) {
+                        fileName = file.getPath();
+                    }
+                    String dataType;
+                    Intent docClient = new Intent(Intent.ACTION_VIEW);
+
+                    MimeTypeMap map = MimeTypeMap.getSingleton();
+                    String ext = MimeTypeMap.getFileExtensionFromUrl(fileName);
+                    dataType = map.getMimeTypeFromExtension(ext);
+
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        docClient.setDataAndType(
+                                FileProvider.getUriForFile(StartActivity.this, StartActivity.this.getPackageName() + ".fileProv", new File(fileName)),
+                                dataType);
+                    } else
+                        docClient.setDataAndType(Uri.fromFile(new File(fileName)),
+                                dataType);
+
+                    docClient.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(docClient);
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+
+                }
+
+            }
+        }
     }
 
     /*

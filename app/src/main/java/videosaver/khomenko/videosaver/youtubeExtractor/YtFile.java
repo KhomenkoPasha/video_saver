@@ -1,4 +1,4 @@
-package android.videosaver.khomenko.videosaver.youtubeExtractor;
+package videosaver.khomenko.videosaver.youtubeExtractor;
 
 
 public class YtFile {

@@ -1,8 +1,9 @@
-package android.videosaver.khomenko.videosaver.adapters;
+package videosaver.khomenko.videosaver.adapters;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.videosaver.khomenko.videosaver.youtubeExtractor.YtFile;
+
+import videosaver.khomenko.videosaver.youtubeExtractor.YtFile;
 
 
 public class RadioDownload extends android.support.v7.widget.AppCompatRadioButton {

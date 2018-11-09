@@ -1,4 +1,4 @@
-package android.videosaver.khomenko.videosaver.youtubeExtractor;
+package videosaver.khomenko.videosaver.youtubeExtractor;
 
 import android.content.Context;
 import android.util.SparseArray;

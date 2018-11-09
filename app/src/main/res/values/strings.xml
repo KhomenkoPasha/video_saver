@@ -6,11 +6,15 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="error_no_yt_link">Not a valid YouTube link!</string>
+    <string name="error_no_yt_link">Недействительная ссылка на YouTube!</string>
     <string name="title_activity_start">StartActivity</string>
     <string name="title_home">Downloader</string>
-    <string name="title_dashboard">My Files</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="download">Download</string>
-    <string name="no_content">No content found</string>
+    <string name="title_dashboard">Мои файлы</string>
+    <string name="title_notifications">Уведомления</string>
+    <string name="download">Скачать</string>
+    <string name="no_content">Не найдено ни одного контента</string>
+    <string name="to_download">Файл отправлен на закачку</string>
+    <string name="to_downlod">Найти по ссылке</string>
+    <string name="to_downad">Видео ссылка</string>
+    <string name="to_dowd">Выберете тип и качество:</string>
 </resources>

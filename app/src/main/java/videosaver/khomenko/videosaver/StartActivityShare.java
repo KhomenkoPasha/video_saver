@@ -1,4 +1,4 @@
-package android.videosaver.khomenko.videosaver;
+package videosaver.khomenko.videosaver;
 
 import android.Manifest;
 import android.content.Intent;

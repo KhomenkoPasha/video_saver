@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name = "app_name"> Video Saver </string>
+    <string name = "navigation_drawer_open"> Open move box </string>
+    <string name = "navigation_drawer_close"> Close navigation box </string>
+    <string name = "nav_header_title"> Android Studio </string>
+    <string name = "nav_header_subtitle"> android.studio@android.com </string>
+    <string name = "nav_header_desc"> Header header </string>
+    <string name = "action_settings"> Settings </string>
+    <string name = "error_no_yt_link"> Invalid link to YouTube! </string>
+    <string name = "title_activity_start"> StartActivity </string>
+    <string name = "title_home"> Downloader </string>
+    <string name = "title_dashboard"> My Files </string>
+    <string name = "title_notifications"> Notifications </string>
+    <string name = "download"> Download </string>
+    <string name = "no_content"> No content found </string>
+    <string name = "to_download"> File sent for download </string>
+    <string name = "to_downlod"> Find by reference </string>
+    <string name = "to_downad"> Video Link </string>
+    <string name = "to_dowd"> Select type and quality: </string>
+</resources>

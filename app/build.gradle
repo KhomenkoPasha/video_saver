@@ -2,8 +2,9 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+
     defaultConfig {
-        applicationId "android.videosaver.khomenko.videosaver"
+        applicationId "videosaver.khomenko.videosaver"
         minSdkVersion 16
         targetSdkVersion 28
         buildToolsVersion '28.0.3'
